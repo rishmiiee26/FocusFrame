@@ -1,16 +1,34 @@
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8">
+  <title>FocusFrame</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-  Hello world
+  <h1>🧠 FocusFrame</h1>
+
+  <input type="text" id="urlInput" placeholder="Enter current URL" />
+  <button onclick="startTracking()">Start</button>
+  <button onclick="stopTracking()">Stop</button>
+
+  <div>
+    <canvas id="timeChart"></canvas>
+  </div>
+
+  <h2>🕒 Pomodoro Timer</h2>
+  <button onclick="startPomodoro()">Start Pomodoro (25 min)</button>
+  <p id="pomodoroStatus"></p>
+
+  <h3>🔖 Tag Current URL</h3>
+  <select id="tagSelect">
+    <option value="productive">Productive</option>
+    <option value="distracting">Distracting</option>
+  </select>
+  <button onclick="tagURL()">Tag</button>
+
   <script src="script.js"></script>
 </body>
-
 </html>
