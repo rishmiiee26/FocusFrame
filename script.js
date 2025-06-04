@@ -2,48 +2,54 @@ let startTime = null;
 let currentURL = '';
 let timeData = JSON.parse(localStorage.getItem("focusData") || "{}");
 
-const API_BASE = '/api'; // Use relative path for API calls
+// ✅ Supabase credentials (replace with your actual values)
+const SUPABASE_URL = 'https://ubziobxksfpvxbazjsro.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InViemlvYnhrc2ZwdnhiYXpqc3JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMjI1OTcsImV4cCI6MjA2NDU5ODU5N30.Oi4GXZZKeT2rwoKEbRB8xgH-7wVV7v-jf91mylU72mk';
 
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Start tracking time
 async function startTracking() {
   currentURL = document.getElementById("urlInput").value;
   if (!currentURL) return alert("Enter a URL first");
   startTime = Date.now();
-  console.log("Tracking started for:", currentURL);
+  console.log("⏱️ Tracking started for:", currentURL);
 }
 
+// Stop tracking and log time
 async function stopTracking() {
   if (!startTime) return;
   const duration = Math.floor((Date.now() - startTime) / 1000);
 
-  // Store locally for immediate chart update
+  // Store locally for chart
   timeData[currentURL] = (timeData[currentURL] || 0) + duration;
   localStorage.setItem("focusData", JSON.stringify(timeData));
 
-  // Send to backend
+  // ✅ Save to Supabase
   try {
-    const response = await fetch(`${API_BASE}/track`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const { data, error } = await supabase.from('focus_sessions').insert([
+      {
         url: currentURL,
         duration: duration,
-        user: 'demo_user' // You can make this dynamic later
-      })
-    });
+        user: 'demo_user', // Optional user ID
+        timestamp: new Date().toISOString()
+      }
+    ]);
 
-    if (response.ok) {
-      console.log('Data saved to database');
+    if (error) {
+      console.error('❌ Supabase error:', error.message);
     } else {
-      console.error('Failed to save to database');
+      console.log('✅ Data saved to Supabase:', data);
     }
-  } catch (error) {
-    console.error('Error sending data to backend:', error);
+  } catch (err) {
+    console.error('Error inserting to Supabase:', err);
   }
 
   startTime = null;
   updateChart();
 }
 
+// Update the bar chart
 function updateChart() {
   const labels = Object.keys(timeData);
   const values = Object.values(timeData);
@@ -64,27 +70,40 @@ function updateChart() {
   });
 }
 
+// Tag a URL as productive or distracting
 async function tagURL() {
   const tag = document.getElementById("tagSelect").value;
   if (!currentURL) return alert("Start tracking first");
 
-  // Store locally
   localStorage.setItem(`tag_${currentURL}`, tag);
 
-  // Send to backend (you can implement this endpoint later)
+  // ✅ Save tag to Supabase (optional: create a new table or add 'tag' to focus_sessions)
   try {
-    console.log(`Tagged ${currentURL} as ${tag}`);
-    alert(`Tagged ${currentURL} as ${tag}`);
-  } catch (error) {
-    console.error('Error tagging URL:', error);
+    const { error } = await supabase.from('focus_sessions').insert([
+      {
+        url: currentURL,
+        duration: 0,
+        user: 'demo_user',
+        tag: tag,
+        timestamp: new Date().toISOString()
+      }
+    ]);
+    if (error) {
+      console.error('❌ Tag error:', error.message);
+    } else {
+      console.log(`✅ Tagged ${currentURL} as ${tag}`);
+      alert(`Tagged ${currentURL} as ${tag}`);
+    }
+  } catch (err) {
+    console.error('Error tagging URL:', err);
   }
 }
 
+// Pomodoro timer
 function startPomodoro() {
   document.getElementById("pomodoroStatus").textContent = "Pomodoro started! Ends in 25 mins.";
 
-  // Send pomodoro start to backend (you can implement this endpoint later)
-  console.log('Pomodoro session started');
+  console.log('🍅 Pomodoro session started');
 
   setTimeout(() => {
     alert("Pomodoro ended! Take a 5-minute break.");
@@ -92,4 +111,5 @@ function startPomodoro() {
   }, 25 * 60 * 1000);
 }
 
+// Initial chart render
 updateChart();

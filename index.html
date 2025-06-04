@@ -6,29 +6,38 @@
   <title>FocusFrame</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
-  <h1>🧠 FocusFrame</h1>
+  <div class="container">
+    <h1>🧠 FocusFrame</h1>
 
-  <input type="text" id="urlInput" placeholder="Enter current URL" />
-  <button onclick="startTracking()">Start</button>
-  <button onclick="stopTracking()">Stop</button>
+    <div class="input-group">
+      <input type="text" id="urlInput" placeholder="Enter current URL" />
+      <button onclick="startTracking()">Start</button>
+      <button onclick="stopTracking()">Stop</button>
+    </div>
 
-  <div>
-    <canvas id="timeChart"></canvas>
+    <div class="chart-container">
+      <canvas id="timeChart"></canvas>
+    </div>
+
+    <div class="section">
+      <h2>🕒 Pomodoro Timer</h2>
+      <button onclick="startPomodoro()">Start Pomodoro (25 min)</button>
+      <p id="pomodoroStatus"></p>
+    </div>
+
+    <div class="section">
+      <h3>🔖 Tag Current URL</h3>
+      <select id="tagSelect">
+        <option value="productive">Productive</option>
+        <option value="distracting">Distracting</option>
+      </select>
+      <button onclick="tagURL()">Tag</button>
+    </div>
   </div>
-
-  <h2>🕒 Pomodoro Timer</h2>
-  <button onclick="startPomodoro()">Start Pomodoro (25 min)</button>
-  <p id="pomodoroStatus"></p>
-
-  <h3>🔖 Tag Current URL</h3>
-  <select id="tagSelect">
-    <option value="productive">Productive</option>
-    <option value="distracting">Distracting</option>
-  </select>
-  <button onclick="tagURL()">Tag</button>
 
   <script src="script.js"></script>
 </body>
