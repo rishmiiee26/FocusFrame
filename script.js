@@ -1,9 +1,8 @@
-
 let startTime = null;
 let currentURL = '';
 let timeData = JSON.parse(localStorage.getItem("focusData") || "{}");
 
-const API_BASE = 'https://' + window.location.hostname.replace('-80', '-5000'); // Backend API base URL
+const API_BASE = `https://${window.location.hostname.split('-')[0]}-5000.${window.location.hostname.split('.').slice(1).join('.')}`; // Backend API base URL
 
 async function startTracking() {
   currentURL = document.getElementById("urlInput").value;
@@ -15,11 +14,11 @@ async function startTracking() {
 async function stopTracking() {
   if (!startTime) return;
   const duration = Math.floor((Date.now() - startTime) / 1000);
-  
+
   // Store locally for immediate chart update
   timeData[currentURL] = (timeData[currentURL] || 0) + duration;
   localStorage.setItem("focusData", JSON.stringify(timeData));
-  
+
   // Send to backend
   try {
     const response = await fetch(`${API_BASE}/track`, {
@@ -31,7 +30,7 @@ async function stopTracking() {
         user: 'demo_user' // You can make this dynamic later
       })
     });
-    
+
     if (response.ok) {
       console.log('Data saved to database');
     } else {
@@ -40,7 +39,7 @@ async function stopTracking() {
   } catch (error) {
     console.error('Error sending data to backend:', error);
   }
-  
+
   startTime = null;
   updateChart();
 }
@@ -68,10 +67,10 @@ function updateChart() {
 async function tagURL() {
   const tag = document.getElementById("tagSelect").value;
   if (!currentURL) return alert("Start tracking first");
-  
+
   // Store locally
   localStorage.setItem(`tag_${currentURL}`, tag);
-  
+
   // Send to backend (you can implement this endpoint later)
   try {
     console.log(`Tagged ${currentURL} as ${tag}`);
@@ -83,10 +82,10 @@ async function tagURL() {
 
 function startPomodoro() {
   document.getElementById("pomodoroStatus").textContent = "Pomodoro started! Ends in 25 mins.";
-  
-  // Send pomodoro start to backend (you can implement this later)
+
+  // Send pomodoro start to backend (you can implement this endpoint later)
   console.log('Pomodoro session started');
-  
+
   setTimeout(() => {
     alert("Pomodoro ended! Take a 5-minute break.");
     document.getElementById("pomodoroStatus").textContent = "Pomodoro complete.";
