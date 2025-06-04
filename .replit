@@ -10,7 +10,7 @@ publicDir = "/"
 deploymentTarget = "static"
 
 [workflows]
-runButton = "Serve static"
+runButton = "Full Stack App"
 
 [[workflows.workflow]]
 name = "Serve static"
@@ -36,6 +36,15 @@ waitForPort = 80
 
 [[workflows.workflow]]
 name = "Start Backend Server"
+author = 34561846
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[[workflows.workflow]]
+name = "Full Stack App"
 author = 34561846
 mode = "sequential"
 

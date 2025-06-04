@@ -2,7 +2,7 @@ let startTime = null;
 let currentURL = '';
 let timeData = JSON.parse(localStorage.getItem("focusData") || "{}");
 
-const API_BASE = `https://${window.location.hostname.split('-')[0]}-5000.${window.location.hostname.split('.').slice(1).join('.')}`; // Backend API base URL
+const API_BASE = '/api'; // Use relative path for API calls
 
 async function startTracking() {
   currentURL = document.getElementById("urlInput").value;
