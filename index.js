@@ -4,8 +4,19 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+
+// Enable CORS for all origins
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'Backend is running!', timestamp: new Date().toISOString() });
+});
 
 // Simple route to log time (without Supabase for now)
 app.post("/track", async (req, res) => {
