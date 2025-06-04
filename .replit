@@ -10,7 +10,7 @@ publicDir = "/"
 deploymentTarget = "static"
 
 [workflows]
-runButton = "Start Backend Server"
+runButton = "Serve static"
 
 [[workflows.workflow]]
 name = "Serve static"
